@@ -1,9 +1,7 @@
 package com.skunkworks.bolt;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import backtype.storm.task.OutputCollector;
@@ -12,30 +10,25 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
-import backtype.storm.tuple.Values;
 
 public class FileWriterBolt extends BaseRichBolt{
     OutputCollector _collector;
-    BufferedWriter bw;
+    PrintWriter pw;
 	
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		_collector = collector;
 		try {
-			bw = new BufferedWriter(new FileWriter(new File("/tmp/storm-cass.txt")));
+			pw = new PrintWriter("/tmp/storm-cass.txt", "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void execute(Tuple input) {
-		try {
-			bw.write(input.getString(0));
-			bw.flush();
-			_collector.emit(input, new Values(input));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		pw.println(input.getString(0));
+		pw.flush();
+		_collector.ack(input);
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -44,11 +37,8 @@ public class FileWriterBolt extends BaseRichBolt{
 	
 	@Override
 	public void cleanup(){
-		try {
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		pw.close();
+		super.cleanup();
 	}
 	
 
