@@ -29,7 +29,7 @@ public class RandomLoglinesSpout extends BaseRichSpout{
 		StringBuffer line = new StringBuffer("" + System.currentTimeMillis());
 		line.append(",").append(users[_rand.nextInt(users.length)]).append(",")
 						.append(videoTitles[_rand.nextInt(videoTitles.length)]);
-		_collector.emit(new Values(line));
+		_collector.emit(new Values(line.toString()));
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
