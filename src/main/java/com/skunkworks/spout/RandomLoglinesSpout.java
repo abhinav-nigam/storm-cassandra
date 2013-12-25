@@ -23,7 +23,7 @@ public class RandomLoglinesSpout extends BaseRichSpout{
 
 	public void nextTuple() {
 		Utils.sleep(10);
-		String[] videoTitles = new String[]{"Gangnam Style, Harlem Shake, " +
+		String[] videoTitles = new String[]{"Gangnam Style", "Harlem Shake",
 				"What the fox says"};
 		String[] users = new String[]{"Tom", "Dick", "Harry"};
 		StringBuffer line = new StringBuffer("" + System.currentTimeMillis());

@@ -44,6 +44,7 @@ public class FileWriterBolt extends BaseRichBolt{
 	@Override
 	public void cleanup(){
 		try {
+			bw.flush();
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
