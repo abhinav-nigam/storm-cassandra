@@ -16,7 +16,7 @@ public class SCTopology {
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
 		TopologyBuilder topologyBuilder = new TopologyBuilder();
 		topologyBuilder.setSpout("loglines", new RandomLoglinesSpout(),3);
-		topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 3);
+		topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 3).shuffleGrouping("loglines");
 		
 		Config conf = new Config();
 	    conf.setDebug(true);
