@@ -25,7 +25,7 @@ public class FileWriterBolt extends BaseRichBolt{
 	}
 
 	public void execute(Tuple input) {
-		pw.println(input.toString());
+		pw.println(input.getString(0));
 		pw.flush();
 		_collector.ack(input);
 	}
