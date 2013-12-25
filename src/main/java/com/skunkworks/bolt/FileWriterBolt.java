@@ -8,7 +8,6 @@ import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
-import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 
 public class FileWriterBolt extends BaseRichBolt{
@@ -19,20 +18,19 @@ public class FileWriterBolt extends BaseRichBolt{
 			OutputCollector collector) {
 		_collector = collector;
 		try {
-			pw = new PrintWriter("/tmp/storm-cass.txt", "UTF-8");
+			pw = new PrintWriter("/home/ubuntu/storm-cass.txt", "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void execute(Tuple input) {
-		pw.println(input.getString(0));
+		pw.println(input.toString());
 		pw.flush();
 		_collector.ack(input);
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("line"));		
 	}
 	
 	@Override
