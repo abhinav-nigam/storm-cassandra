@@ -31,6 +31,7 @@ public class FileWriterBolt extends BaseRichBolt{
 	public void execute(Tuple input) {
 		try {
 			bw.write(input.getString(0));
+			bw.flush();
 			_collector.emit(input, new Values(input));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -44,7 +45,6 @@ public class FileWriterBolt extends BaseRichBolt{
 	@Override
 	public void cleanup(){
 		try {
-			bw.flush();
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
