@@ -30,7 +30,7 @@ public class FileWriterBolt extends BaseRichBolt{
 		String line = input.getString(0);
 		String[] tokens = line.split(",");
 		pw.println(input.getString(0));
-		_collector.emit(tuple(tokens[1], tokens[2], 1));
+		_collector.emit(tuple(tokens[1], tokens[2], 1L));
 		_collector.ack(input);
 	}
 
