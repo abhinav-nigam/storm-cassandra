@@ -29,12 +29,14 @@ public class SCTopology {
 		Config conf = new Config();
 		conf.put("CassandraLocal", cassandraConfig);
 		
-		CassandraCounterBatchingBolt logPersistenceBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","users", "user", "increment" );
+		CassandraCounterBatchingBolt userBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","users", "user", "increment" );
+		CassandraCounterBatchingBolt songBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","songs", "song", "increment" );
 		
 		TopologyBuilder topologyBuilder = new TopologyBuilder();
 		topologyBuilder.setSpout("loglines", new RandomLoglinesSpout(),3);
 		topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 3).shuffleGrouping("loglines");
-		topologyBuilder.setBolt("cassandraWriter", logPersistenceBolt, 3).shuffleGrouping("fileWriter");
+		topologyBuilder.setBolt("cassandraWriter", userBolt, 3).shuffleGrouping("fileWriter");
+		topologyBuilder.setBolt("cassandraWriter", songBolt, 3).shuffleGrouping("fileWriter");
 	    
 	    if (args != null && args.length > 0) {
 	        conf.setNumWorkers(3);
