@@ -18,7 +18,7 @@ public class FileWriterBolt extends BaseRichBolt{
 			OutputCollector collector) {
 		_collector = collector;
 		try {
-			pw = new PrintWriter("/home/ubuntu/storm-cass.txt", "UTF-8");
+			pw = new PrintWriter("/tmp/storm-cass.txt", "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
