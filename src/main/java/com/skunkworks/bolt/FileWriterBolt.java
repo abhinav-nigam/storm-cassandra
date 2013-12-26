@@ -1,5 +1,6 @@
 package com.skunkworks.bolt;
 
+import static backtype.storm.utils.Utils.tuple;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -8,6 +9,7 @@ import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
+import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 
 public class FileWriterBolt extends BaseRichBolt{
@@ -25,11 +27,15 @@ public class FileWriterBolt extends BaseRichBolt{
 	}
 
 	public void execute(Tuple input) {
+		String line = input.getString(0);
+		String[] tokens = line.split(",");
 		pw.println(input.getString(0));
+		_collector.emit(tuple(tokens[1], tokens[2], 1));
 		_collector.ack(input);
 	}
 
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
+		declarer.declare(new Fields("user", "song", "increment"));
 	}
 	
 	@Override
