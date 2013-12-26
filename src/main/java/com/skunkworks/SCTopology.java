@@ -1,5 +1,6 @@
 package com.skunkworks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +20,18 @@ import com.skunkworks.spout.RandomLoglinesSpout;
 public class SCTopology {
 
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
+		Map<String, Object> cassandraConfig = new HashMap<String, Object>();
+	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_HOST, "localhost:9160");
+	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_KEYSPACE, new ArrayList<String>().add("demo"));
+		Config conf = new Config();
+		conf.put("CassandraLocal", cassandraConfig);
+		
 		CassandraCounterBatchingBolt logPersistenceBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","users", "user", "increment" );
 		
 		TopologyBuilder topologyBuilder = new TopologyBuilder();
 		topologyBuilder.setSpout("loglines", new RandomLoglinesSpout(),3);
 		topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 3).shuffleGrouping("loglines");
 		topologyBuilder.setBolt("cassandraWriter", logPersistenceBolt, 3).shuffleGrouping("fileWriter");
-		
-		Map<String, Object> cassandraConfig = new HashMap<String, Object>();
-	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_HOST, "localhost:9160");
-	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_KEYSPACE, "demo");
-		Config conf = new Config();
-		conf.put("CassandraLocal", cassandraConfig);
 	    
 	    if (args != null && args.length > 0) {
 	        conf.setNumWorkers(3);
