@@ -1,6 +1,7 @@
 package com.skunkworks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +21,11 @@ import com.skunkworks.spout.RandomLoglinesSpout;
 public class SCTopology {
 
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
+        Collection<String> keyspaces = new ArrayList<String>();
+        keyspaces.add("demo");
 		Map<String, Object> cassandraConfig = new HashMap<String, Object>();
 	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_HOST, "localhost:9160");
-	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_KEYSPACE, new ArrayList<String>().add("demo"));
+	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_KEYSPACE, keyspaces);
 		Config conf = new Config();
 		conf.put("CassandraLocal", cassandraConfig);
 		
