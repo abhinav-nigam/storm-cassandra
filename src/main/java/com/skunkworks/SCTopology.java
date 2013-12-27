@@ -14,11 +14,11 @@ import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 
 import com.hmsonline.storm.cassandra.StormCassandraConstants;
+import com.hmsonline.storm.cassandra.bolt.AckStrategy;
 import com.hmsonline.storm.cassandra.bolt.CassandraBatchingBolt;
 import com.hmsonline.storm.cassandra.bolt.CassandraCounterBatchingBolt;
 import com.hmsonline.storm.cassandra.bolt.mapper.DefaultTupleMapper;
 import com.skunkworks.bolt.FileWriterBolt;
-import com.skunkworks.spout.RandomLoglinesSpout;
 import com.skunkworks.spout.YoutubeSpout;
 
 public class SCTopology {
@@ -30,11 +30,13 @@ public class SCTopology {
 	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_HOST, "localhost:9160");
 	    cassandraConfig.put(StormCassandraConstants.CASSANDRA_KEYSPACE, keyspaces);
 		Config conf = new Config();
+		conf.setDebug(true);
 		conf.put("CassandraLocal", cassandraConfig);
 		
 		CassandraCounterBatchingBolt userBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","users", "user", "increment" );
 		CassandraCounterBatchingBolt songBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","songs", "song", "increment" );
 		CassandraBatchingBolt videoBolt = new CassandraBatchingBolt("CassandraLocal", new DefaultTupleMapper("demo", "videos", "key"));
+		videoBolt.setAckStrategy(AckStrategy.ACK_ON_WRITE);
 		
 		TopologyBuilder topologyBuilder = new TopologyBuilder();
 		//topologyBuilder.setSpout("loglines", new RandomLoglinesSpout(),3);
