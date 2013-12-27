@@ -29,8 +29,8 @@ public class FileWriterBolt extends BaseRichBolt{
 	public void execute(Tuple input) {
 		String line = input.getString(0);
 		String[] tokens = line.split(",");
-		pw.println(input.getString(0));
-		_collector.emit(tuple(tokens[0] + "," + tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]));
+		pw.println(tuple(tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]).toString());
+		_collector.emit(tuple(tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]));
 		_collector.ack(input);
 	}
 
