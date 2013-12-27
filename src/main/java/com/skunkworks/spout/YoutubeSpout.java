@@ -51,7 +51,7 @@ public class YoutubeSpout extends BaseRichSpout{
         search.setFields("items(id/kind,id/videoId,snippet/title)");
         
         vids.setKey("AIzaSyDhfgjKUG6JW5_NWSdJt2refa5EFdMrf48");
-        vids.setFields("items(id/kind,id/videoId,snippet/title)");
+        vids.setFields("items(id/kind,id/videoId,snippet/title,statistics)");
 	}
 
 	@Override
@@ -70,6 +70,7 @@ public class YoutubeSpout extends BaseRichSpout{
 						 _collector.emit(new Values(rId.getVideoId() + "," + searchResult.getSnippet().getTitle() + "," + searchResult.getSnippet().getUnknownKeys().toString()));
 					 }
 				 }
+				 ids = ids.replaceAll(" ,$", "");
 				 vids.setId(ids);
 				 List<Video> videos = vids.execute().getItems();
 				 for(Video video:videos)
