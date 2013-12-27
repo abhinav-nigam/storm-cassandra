@@ -19,12 +19,14 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 
 public class YoutubeSpout extends BaseRichSpout{
 	SpoutOutputCollector _collector;
 	YouTube _youTube;
 	String _queryTerm;
 	YouTube.Search.List search;
+	YouTube.Videos.List vids;
 	SearchListResponse _response;
 	
 	@Override
@@ -38,7 +40,8 @@ public class YoutubeSpout extends BaseRichSpout{
         }).setApplicationName("data-api-test").build();
 		_queryTerm = "Cadbury";
 		try {
-			search = _youTube.search().list("id,snippet,statistics");
+			search = _youTube.search().list("id,snippet");
+			vids = _youTube.videos().list("id,snippet,statistics");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -46,6 +49,9 @@ public class YoutubeSpout extends BaseRichSpout{
         search.setQ(_queryTerm);
         search.setType("video");
         search.setFields("items(id/kind,id/videoId,snippet/title)");
+        
+        vids.setKey("AIzaSyDhfgjKUG6JW5_NWSdJt2refa5EFdMrf48");
+        vids.setFields("items(id/kind,id/videoId,snippet/title)");
 	}
 
 	@Override
@@ -54,14 +60,20 @@ public class YoutubeSpout extends BaseRichSpout{
 		try {
 			searchResponse = search.execute();
 			if (searchResponse != _response){
+				String ids = "";
 				 _response = searchResponse;
 				 List<SearchResult> searchResultList = searchResponse.getItems();
 				 for(SearchResult searchResult:searchResultList){
 					 ResourceId rId = searchResult.getId();
 					 if (rId.getKind().equals("youtube#video")) {
+						 ids += rId.getVideoId() + ",";
 						 _collector.emit(new Values(rId.getVideoId() + "," + searchResult.getSnippet().getTitle() + "," + searchResult.getSnippet().getUnknownKeys().toString()));
 					 }
 				 }
+				 vids.setId(ids);
+				 List<Video> videos = vids.execute().getItems();
+				 for(Video video:videos)
+					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle() + "," + video.getStatistics().toPrettyString()));
 			 }
 		} catch (IOException e) {
 			e.printStackTrace();
