@@ -10,6 +10,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.Utils;
 
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -55,7 +56,8 @@ public class YoutubeSpout extends BaseRichSpout{
 
 	@Override
 	public void nextTuple() {
-		 SearchListResponse searchResponse;
+		Utils.sleep(500);
+		SearchListResponse searchResponse;
 		try {
 			searchResponse = search.execute();
 			if (searchResponse != _response){
