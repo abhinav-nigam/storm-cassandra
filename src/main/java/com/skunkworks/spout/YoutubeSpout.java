@@ -29,6 +29,7 @@ public class YoutubeSpout extends BaseRichSpout{
 	YouTube.Search.List search;
 	YouTube.Videos.List vids;
 	SearchListResponse _response;
+	long numberOfVideos = 50;
 	
 	@Override
 	public void open(Map conf, TopologyContext context,
@@ -50,7 +51,7 @@ public class YoutubeSpout extends BaseRichSpout{
         search.setQ(_queryTerm);
         search.setType("video");
         search.setFields("items(id/kind,id/videoId,snippet/title)");
-        
+        search.setMaxResults(numberOfVideos);
         vids.setKey("AIzaSyDhfgjKUG6JW5_NWSdJt2refa5EFdMrf48");
 	}
 
