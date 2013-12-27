@@ -38,7 +38,7 @@ public class YoutubeSpout extends BaseRichSpout{
         }).setApplicationName("data-api-test").build();
 		_queryTerm = "Cadbury";
 		try {
-			search = _youTube.search().list("id,snippet");
+			search = _youTube.search().list("id,snippet,statistics");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -59,7 +59,7 @@ public class YoutubeSpout extends BaseRichSpout{
 				 for(SearchResult searchResult:searchResultList){
 					 ResourceId rId = searchResult.getId();
 					 if (rId.getKind().equals("youtube#video")) {
-						 _collector.emit(new Values(rId.getVideoId() + "," + searchResult.getSnippet().getTitle()));
+						 _collector.emit(new Values(rId.getVideoId() + "," + searchResult.getSnippet().getTitle() + "," + searchResult.getSnippet().getUnknownKeys().toString()));
 					 }
 				 }
 			 }
