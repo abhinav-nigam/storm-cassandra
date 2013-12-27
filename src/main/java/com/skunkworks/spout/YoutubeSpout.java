@@ -51,7 +51,6 @@ public class YoutubeSpout extends BaseRichSpout{
         search.setFields("items(id/kind,id/videoId,snippet/title)");
         
         vids.setKey("AIzaSyDhfgjKUG6JW5_NWSdJt2refa5EFdMrf48");
-        vids.setFields("items(id/kind,id/videoId,snippet/title,statistics)");
 	}
 
 	@Override
@@ -67,14 +66,15 @@ public class YoutubeSpout extends BaseRichSpout{
 					 ResourceId rId = searchResult.getId();
 					 if (rId.getKind().equals("youtube#video")) {
 						 ids += rId.getVideoId() + ",";
-						 _collector.emit(new Values(rId.getVideoId() + "," + searchResult.getSnippet().getTitle() + "," + searchResult.getSnippet().getUnknownKeys().toString()));
 					 }
 				 }
 				 ids = ids.replaceAll(" ,$", "");
 				 vids.setId(ids);
 				 List<Video> videos = vids.execute().getItems();
 				 for(Video video:videos)
-					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle() + "," + video.getStatistics().toPrettyString()));
+					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle() + "," + video.getStatistics().getViewCount()
+							 + "," + video.getStatistics().getLikeCount() + "," + video.getStatistics().getDislikeCount()+ "," 
+							 + video.getStatistics().getCommentCount() + "," + video.getStatistics().getFavoriteCount()));
 			 }
 		} catch (IOException e) {
 			e.printStackTrace();
