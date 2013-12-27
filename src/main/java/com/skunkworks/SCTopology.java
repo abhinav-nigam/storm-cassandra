@@ -41,8 +41,8 @@ public class SCTopology {
 		TopologyBuilder topologyBuilder = new TopologyBuilder();
 		//topologyBuilder.setSpout("loglines", new RandomLoglinesSpout(),3);
 		topologyBuilder.setSpout("loglines", new YoutubeSpout(),1);
-		topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 1).shuffleGrouping("loglines");
-		topologyBuilder.setBolt("cassandraWriter", videoBolt, 1).shuffleGrouping("fileWriter");
+		//topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 1).shuffleGrouping("loglines");
+		topologyBuilder.setBolt("cassandraWriter", videoBolt, 1).shuffleGrouping("loglines");
 		//topologyBuilder.setBolt("cassandraUserWriter", userBolt, 3).shuffleGrouping("fileWriter");
 		//topologyBuilder.setBolt("cassandraSongWriter", songBolt, 3).shuffleGrouping("fileWriter");
 	    

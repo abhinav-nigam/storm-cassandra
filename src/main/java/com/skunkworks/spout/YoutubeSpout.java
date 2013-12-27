@@ -72,9 +72,9 @@ public class YoutubeSpout extends BaseRichSpout{
 				 vids.setId(ids);
 				 List<Video> videos = vids.execute().getItems();
 				 for(Video video:videos)
-					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle() + "," + video.getStatistics().getViewCount()
-							 + "," + video.getStatistics().getLikeCount() + "," + video.getStatistics().getDislikeCount() + "," 
-							 + video.getStatistics().getCommentCount() + "," + video.getStatistics().getFavoriteCount()));
+					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle(), video.getStatistics().getViewCount()
+							 , video.getStatistics().getLikeCount(), video.getStatistics().getDislikeCount(),  
+							 video.getStatistics().getCommentCount(), video.getStatistics().getFavoriteCount()));
 			 }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -83,7 +83,7 @@ public class YoutubeSpout extends BaseRichSpout{
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("line"));		
+		declarer.declare(new Fields("key", "views", "likes", "dislikes", "comments", "favourites"));		
 	}
 
 }
