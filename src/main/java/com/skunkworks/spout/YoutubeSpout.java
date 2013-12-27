@@ -74,9 +74,9 @@ public class YoutubeSpout extends BaseRichSpout{
 				 vids.setId(ids);
 				 List<Video> videos = vids.execute().getItems();
 				 for(Video video:videos)
-					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle(), video.getStatistics().getViewCount().byteValue()
-							 , video.getStatistics().getLikeCount().byteValue(), video.getStatistics().getDislikeCount().byteValue(),  
-							 video.getStatistics().getCommentCount().byteValue(), video.getStatistics().getFavoriteCount().byteValue()));
+					 _collector.emit(new Values(video.getId() + "," + video.getSnippet().getTitle(), video.getStatistics().getViewCount().longValue()
+							 , video.getStatistics().getLikeCount().longValue(), video.getStatistics().getDislikeCount().longValue(),  
+							 video.getStatistics().getCommentCount().longValue(), video.getStatistics().getFavoriteCount().longValue()));
 			 }
 		} catch (IOException e) {
 			e.printStackTrace();
