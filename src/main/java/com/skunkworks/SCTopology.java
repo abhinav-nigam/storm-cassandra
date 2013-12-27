@@ -14,7 +14,9 @@ import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 
 import com.hmsonline.storm.cassandra.StormCassandraConstants;
+import com.hmsonline.storm.cassandra.bolt.CassandraBatchingBolt;
 import com.hmsonline.storm.cassandra.bolt.CassandraCounterBatchingBolt;
+import com.hmsonline.storm.cassandra.bolt.mapper.DefaultTupleMapper;
 import com.skunkworks.bolt.FileWriterBolt;
 import com.skunkworks.spout.RandomLoglinesSpout;
 import com.skunkworks.spout.YoutubeSpout;
@@ -32,11 +34,13 @@ public class SCTopology {
 		
 		CassandraCounterBatchingBolt userBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","users", "user", "increment" );
 		CassandraCounterBatchingBolt songBolt = new CassandraCounterBatchingBolt("demo","CassandraLocal","songs", "song", "increment" );
+		CassandraBatchingBolt videoBolt = new CassandraBatchingBolt("CassandraLocal", new DefaultTupleMapper("demo", "videos", "key"));
 		
 		TopologyBuilder topologyBuilder = new TopologyBuilder();
 		//topologyBuilder.setSpout("loglines", new RandomLoglinesSpout(),3);
 		topologyBuilder.setSpout("loglines", new YoutubeSpout(),1);
 		topologyBuilder.setBolt("fileWriter", new FileWriterBolt(), 1).shuffleGrouping("loglines");
+		topologyBuilder.setBolt("cassandraWriter", videoBolt, 1).shuffleGrouping("fileWriter");
 		//topologyBuilder.setBolt("cassandraUserWriter", userBolt, 3).shuffleGrouping("fileWriter");
 		//topologyBuilder.setBolt("cassandraSongWriter", songBolt, 3).shuffleGrouping("fileWriter");
 	    
