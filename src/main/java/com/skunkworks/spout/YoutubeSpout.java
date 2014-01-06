@@ -43,7 +43,7 @@ public class YoutubeSpout extends BaseRichSpout{
 		_queryTerm = "Cadbury";
 		try {
 			search = _youTube.search().list("id,snippet");
-			vids = _youTube.videos().list("id,snippet,statistics");
+			vids = _youTube.videos().list("id,snippet,statistics,player");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
